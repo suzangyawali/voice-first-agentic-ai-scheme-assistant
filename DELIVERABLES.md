@@ -75,6 +75,7 @@ src/
 ├── voice/
 │   ├── stt.py            # OpenAI Whisper (Hindi)
 │   └── tts.py            # gTTS (Hindi)
+    
 └── llm/
     ├── config.py         # Groq/Ollama setup
     └── prompts.py        # Hindi prompts
@@ -103,6 +104,12 @@ python src/main.py --mode demo
 
 # 3. Interactive (live voice)
 python src/main.py --mode interactive
+#4 Test mode
+python src/main.py --mode test
+#demo mode
+python src/main.py --mode demo
+#type mode
+python src/main.py --mode type
 
 # 4. Verify
 bash verify.sh

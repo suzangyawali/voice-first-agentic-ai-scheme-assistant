@@ -391,6 +391,8 @@ success = await tts.speak("नमस्ते!")
 - Print pass/fail counts
 - Useful for: CI/CD validation, regression testing
 
+### 3. Test Mode (`--mode type`)
+    1.Enables text-based interaction instead of voice input
 ---
 
 ## Extraction Patterns (Hindi NLU)
@@ -446,8 +448,8 @@ Example: "मैं SC श्रेणी से हूँ" → category: 'SC'
           │
           ▼
     ┌──────────┐
-    │   STT    │ ← Mock: simulated
-    │ (Audio → │   Real: Whisper/Google
+    │   STT    │ ← assemblyai
+    │ (Audio → │   Real: Whisper
     │  Text)   │
     └─────┬────┘
           │

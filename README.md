@@ -354,43 +354,7 @@ The system includes 3 comprehensive demo scenarios:
 - **State Management**: Built-in persistence
 - **Conditional Routing**: Clear decision logic
 
-## 🎬 Creating Demo Video
 
-### Script Outline (5-7 minutes)
-
-```markdown
-[0:00-0:30] Introduction
-- "This is a LangGraph-based voice-first agent"
-- Show architecture diagram
-
-[0:30-1:30] LangGraph Workflow
-- Explain Planner → Executor → Evaluator
-- Show actual code snippets
-- Display workflow visualization
-
-[1:30-4:00] Live Demonstration
-- Speak in Hindi to system
-- Show STT transcription
-- Display agent reasoning (logs)
-- Show tool executions
-- Present results via TTS
-
-[4:00-5:00] Failure Handling
-- Demonstrate contradiction detection
-- Show incomplete information handling
-- Display error recovery
-
-[5:00-6:00] Architecture Highlights
-- LangGraph StateGraph
-- Typed state schema
-- Node implementations
-- Tool integration
-
-[6:00-7:00] Summary
-- Key features recap
-- Requirements compliance
-- Thank you
-```
 
 ### Key Points to Emphasize
 
