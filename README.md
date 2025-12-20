@@ -472,3 +472,4 @@ This checks:
 - ✅ Dependencies installed
 - ✅ LangGraph setup
 - ✅ STT/TTS configured
+# voice-first-agentic-ai-scheme-assistant
