@@ -1,0 +1,23 @@
+"""
+LLM Module
+Manages LLM provider and interactions
+"""
+
+from .config import LLMManager, get_llm_manager
+from .prompts import (
+    INTENT_CLASSIFICATION_PROMPT,
+    INFORMATION_EXTRACTION_PROMPT,
+    CONTRADICTION_DETECTION_PROMPT,
+    RESPONSE_GENERATION_PROMPT,
+    EVALUATION_PROMPT
+)
+
+__all__ = [
+    'LLMManager',
+    'get_llm_manager',
+    'INTENT_CLASSIFICATION_PROMPT',
+    'INFORMATION_EXTRACTION_PROMPT',
+    'CONTRADICTION_DETECTION_PROMPT',
+    'RESPONSE_GENERATION_PROMPT',
+    'EVALUATION_PROMPT'
+]

@@ -1,0 +1,232 @@
+{
+  "schemes": [
+    {
+      "id": "PM_KISAN",
+      "name_hindi": "पीएम-किसान (प्रधानमंत्री किसान सम्मान निधि)",
+      "name_english": "PM-KISAN",
+      "category": "कृषि",
+      "description_hindi": "किसानों के लिए वित्तीय सहायता",
+      "description_english": "Financial support for farmers",
+      "benefits": "सालाना 6000 रुपये (तीन किस्तों में)",
+      "details": "छोटे और सीमांत किसानों को न्यूनतम आय सहायता प्रदान करने के लिए केंद्र सरकार की योजना",
+      "eligibility": {
+        "occupation": ["farmer", "agriculture"],
+        "min_age": 18,
+        "max_income": 200000
+      },
+      "documents_required": [
+        "आधार कार्ड",
+        "भूमि दस्तावेज",
+        "बैंक खाता विवरण"
+      ],
+      "how_to_apply": "https://pmkisan.gov.in/"
+    },
+    {
+      "id": "AYUSHMAN_BHARAT",
+      "name_hindi": "आयुष्मान भारत - पीएम-जेएवाई",
+      "name_english": "Ayushman Bharat",
+      "category": "स्वास्थ्य",
+      "description_hindi": "गरीब परिवारों के लिए मुफ्त स्वास्थ्य बीमा",
+      "description_english": "Free health insurance for poor families",
+      "benefits": "सालाना 5 लाख रुपये तक का मुफ्त इलाज",
+      "details": "गरीब और कमजोर परिवारों को माध्यमिक और तृतीयक अस्पताल में भर्ती के लिए स्वास्थ्य सुरक्षा प्रदान करने की योजना",
+      "eligibility": {
+        "max_income": 100000,
+        "min_age": 0
+      },
+      "documents_required": [
+        "आधार कार्ड",
+        "राशन कार्ड",
+        "आय प्रमाण पत्र"
+      ],
+      "how_to_apply": "https://pmjay.gov.in/"
+    },
+    {
+      "id": "BETI_BACHAO",
+      "name_hindi": "बेटी बचाओ बेटी पढ़ाओ",
+      "name_english": "Beti Bachao Beti Padhao",
+      "category": "महिला सशक्तिकरण",
+      "description_hindi": "बालिकाओं की शिक्षा और सशक्तिकरण",
+      "description_english": "Girl child education and empowerment",
+      "benefits": "शिक्षा के लिए वित्तीय सहायता और बचत योजना",
+      "details": "बालिकाओं के अस्तित्व, सुरक्षा और शिक्षा को बढ़ावा देने के लिए सरकारी योजना",
+      "eligibility": {
+        "gender": "female",
+        "max_age": 21,
+        "is_student": true
+      },
+      "documents_required": [
+        "बालिका का जन्म प्रमाण पत्र",
+        "माता-पिता का आधार",
+        "स्कूल/कॉलेज प्रवेश प्रमाण"
+      ],
+      "how_to_apply": "https://wcd.nic.in/bbbp-schemes"
+    },
+    {
+      "id": "SCHOLARSHIP_SC_ST",
+      "name_hindi": "SC/ST छात्रवृत्ति (मैट्रिक पश्च छात्रवृत्ति)",
+      "name_english": "Post Matric Scholarship for SC/ST Students",
+      "category": "शिक्षा",
+      "description_hindi": "SC/ST छात्रों के लिए छात्रवृत्ति",
+      "description_english": "Scholarship for SC/ST students",
+      "benefits": "शिक्षा खर्च, फीस और रखरखाव भत्ता",
+      "details": "SC/ST वर्ग के छात्रों के लिए मैट्रिक के बाद की शिक्षा हेतु वित्तीय सहायता",
+      "eligibility": {
+        "category": ["SC", "ST"],
+        "is_student": true,
+        "max_income": 250000,
+        "min_age": 15
+      },
+      "documents_required": [
+        "जाति प्रमाण पत्र",
+        "आय प्रमाण पत्र",
+        "मार्कशीट",
+        "बैंक खाता विवरण"
+      ],
+      "how_to_apply": "https://scholarships.gov.in/"
+    },
+    {
+      "id": "DISABILITY_PENSION",
+      "name_hindi": "इंदिरा गांधी राष्ट्रीय विकलांगता पेंशन योजना",
+      "name_english": "Indira Gandhi National Disability Pension Scheme",
+      "category": "सामाजिक कल्याण",
+      "description_hindi": "विकलांग व्यक्तियों के लिए पेंशन",
+      "description_english": "Pension for persons with disabilities",
+      "benefits": "मासिक 500-1000 रुपये पेंशन",
+      "details": "गंभीर विकलांगता वाले गरीब लोगों के लिए वित्तीय सहायता",
+      "eligibility": {
+        "has_disabilities": true,
+        "min_age": 18,
+        "max_age": 59,
+        "max_income": 150000
+      },
+      "documents_required": [
+        "विकलांगता प्रमाण पत्र (80% से अधिक)",
+        "आधार कार्ड",
+        "आय प्रमाण पत्र",
+        "बैंक खाता"
+      ],
+      "how_to_apply": "जिला समाज कल्याण कार्यालय"
+    },
+    {
+      "id": "WIDOW_PENSION",
+      "name_hindi": "इंदिरा गांधी राष्ट्रीय विधवा पेंशन योजना",
+      "name_english": "Indira Gandhi National Widow Pension Scheme",
+      "category": "सामाजिक कल्याण",
+      "description_hindi": "विधवाओं के लिए पेंशन",
+      "description_english": "Pension for widows",
+      "benefits": "मासिक 500-1000 रुपये पेंशन",
+      "details": "गरीब विधवाओं को वित्तीय सहायता प्रदान करने की योजना",
+      "eligibility": {
+        "gender": "female",
+        "marital_status": "widow",
+        "min_age": 40,
+        "max_age": 59,
+        "max_income": 100000
+      },
+      "documents_required": [
+        "पति का मृत्यु प्रमाण पत्र",
+        "आधार कार्ड",
+        "आयु प्रमाण पत्र",
+        "आय प्रमाण पत्र"
+      ],
+      "how_to_apply": "जिला समाज कल्याण कार्यालय"
+    },
+    {
+      "id": "OLD_AGE_PENSION",
+      "name_hindi": "इंदिरा गांधी राष्ट्रीय वृद्धावस्था पेंशन योजना",
+      "name_english": "Indira Gandhi National Old Age Pension Scheme",
+      "category": "सामाजिक कल्याण",
+      "description_hindi": "वरिष्ठ नागरिकों के लिए पेंशन",
+      "description_english": "Pension for senior citizens",
+      "benefits": "मासिक 500-1000 रुपये पेंशन (60+ के लिए 500, 80+ के लिए 1000)",
+      "details": "गरीब बुजुर्गों को वित्तीय सहायता प्रदान करने की योजना",
+      "eligibility": {
+        "min_age": 60,
+        "max_income": 120000
+      },
+      "documents_required": [
+        "आयु प्रमाण पत्र",
+        "आधार कार्ड",
+        "आय प्रमाण पत्र",
+        "बैंक खाता"
+      ],
+      "how_to_apply": "जिला समाज कल्याण कार्यालय"
+    },
+    {
+      "id": "MUDRA_LOAN",
+      "name_hindi": "प्रधानमंत्री मुद्रा योजना",
+      "name_english": "Pradhan Mantri MUDRA Yojana",
+      "category": "उद्यमिता",
+      "description_hindi": "छोटे व्यवसायों के लिए सूक्ष्म ऋण",
+      "description_english": "Micro loan for small businesses",
+      "benefits": "10 लाख रुपये तक का ऋण (कम ब्याज दर पर)",
+      "details": "छोटे व्यवसायों और सूक्ष्म उद्यमों के लिए गैर-कॉर्पोरेट, गैर-कृषि ऋण",
+      "eligibility": {
+        "min_age": 18,
+        "business_plan": "आवश्यक"
+      },
+      "documents_required": [
+        "आधार कार्ड",
+        "व्यवसाय योजना",
+        "बैंक स्टेटमेंट",
+        "निवास प्रमाण"
+      ],
+      "how_to_apply": "https://www.mudra.org.in/"
+    },
+    {
+      "id": "SKILL_INDIA",
+      "name_hindi": "प्रधानमंत्री कौशल विकास योजना (PMKVY)",
+      "name_english": "Pradhan Mantri Kaushal Vikas Yojana",
+      "category": "कौशल विकास",
+      "description_hindi": "मुफ्त कौशल प्रशिक्षण और प्रमाणन",
+      "description_english": "Free skill training and certification",
+      "benefits": "मुफ्त प्रशिक्षण + प्रमाण पत्र + भत्ता",
+      "details": "युवाओं को कौशल प्रशिक्षण और रोजगार के अवसर प्रदान करने की योजना",
+      "eligibility": {
+        "min_age": 18,
+        "max_age": 35,
+        "is_student": false
+      },
+      "documents_required": [
+        "आधार कार्ड",
+        "शैक्षिक योग्यता प्रमाण पत्र",
+        "बैंक खाता"
+      ],
+      "how_to_apply": "https://www.pmkvyofficial.org/"
+    },
+    {
+      "id": "UJJWALA_YOJANA",
+      "name_hindi": "प्रधानमंत्री उज्ज्वला योजना",
+      "name_english": "Pradhan Mantri Ujjwala Yojana",
+      "category": "महिला कल्याण",
+      "description_hindi": "महिलाओं के लिए मुफ्त LPG कनेक्शन",
+      "description_english": "Free LPG connection for women",
+      "benefits": "मुफ्त गैस कनेक्शन + सब्सिडी",
+      "details": "गरीब परिवारों की महिलाओं को मुफ्त LPG कनेक्शन प्रदान करने की योजना",
+      "eligibility": {
+        "gender": "female",
+        "min_age": 18,
+        "max_income": 100000
+      },
+      "documents_required": [
+        "बीपीएल कार्ड / आधार",
+        "निवास प्रमाण",
+        "बैंक खाता",
+        "पासपोर्ट फोटो"
+      ],
+      "how_to_apply": "https://www.pmuy.gov.in/"
+    }
+  ],
+  
+  "scheme_categories": {
+    "कृषि": "agriculture",
+    "स्वास्थ्य": "health",
+    "शिक्षा": "education",
+    "महिला सशक्तिकरण": "women_empowerment",
+    "सामाजिक कल्याण": "social_welfare",
+    "उद्यमिता": "entrepreneurship",
+    "कौशल विकास": "skill_development",
+    "महिला कल्याण": "women_welfare"
+  }
+}
