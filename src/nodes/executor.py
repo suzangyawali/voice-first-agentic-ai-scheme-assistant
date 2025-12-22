@@ -58,13 +58,10 @@ def is_low_quality_input(text: str) -> bool:
 
 class ExecutorNode:
     """
-    Executor Node (STRICT + SAFE MODE)
-
-    Guarantees:
-    - Accepts ONLY explicitly mentioned user info
-    - NEVER hallucinates
-    - Regex fallback when LLM JSON fails
-    - Stable for Hindi voice input
+    Executor Node
+    - State-aware
+    - Memory-safe
+    - Duplicate-application protected
     """
 
     def __init__(self, eligibility_tool, application_tool):
@@ -87,39 +84,29 @@ class ExecutorNode:
     def __call__(self, state: AgentState) -> AgentState:
         logger.info("[EXECUTOR] Executing")
 
+        # ✅ Ensure memory exists
+        state.setdefault("applied_schemes", [])
+
         user_text = state["user_input"]
 
-        # 🚫 Reject meaningless utterances
         if is_low_quality_input(user_text):
-            logger.warning("[EXECUTOR] Low-quality input → clarification")
             state["needs_clarification"] = True
             state["next_step"] = "evaluator"
             return state
 
+        # 🔍 Extract info
         extracted = self._extract_all_info(user_text)
-
-        if not extracted:
-            logger.info("[EXECUTOR] No explicit info extracted")
-            state["needs_clarification"] = True
-            state["next_step"] = "evaluator"
-            return state
-
-        logger.info(f"[EXECUTOR] Accepted explicit fields: {extracted}")
-        state["extracted_info"] = extracted
-
-        # ✅ Update profile safely
         for field, value in extracted.items():
             state = update_profile(state, field, value)
 
         intent = state.get("current_intent")
 
-        # Tool usage
+        # 🔎 Eligibility check
         if intent in ["find_schemes", "provide_info"]:
             if state.get("age") and state.get("income") and state.get("gender"):
                 state = self._execute_eligibility_check(state)
-            else:
-                logger.info("[EXECUTOR] Profile incomplete → skip eligibility")
 
+        # 📝 Application
         elif intent == "apply_scheme":
             state = self._execute_application(state)
 
@@ -132,49 +119,33 @@ class ExecutorNode:
         prompt = get_prompt("information_extraction", user_input=text)
         response = self.llm_manager.invoke(prompt)
 
-        logger.info(f"[EXECUTOR] LLM raw response: {response[:150]}...")
-
-        # 🚑 HARD FAIL → REGEX
         result = self.llm_manager.parse_json_response(response)
-        if not result:
-            logger.warning("[EXECUTOR] JSON parse failed → regex fallback")
+        if not result or float(result.get("confidence", 0)) < CONFIDENCE_THRESHOLD:
             return self._regex_only(text)
 
-        confidence = float(result.get("confidence", 0.0))
-        explicit_fields = set(result.get("extracted_fields", []))
+        extracted = {}
 
-        # 🔴 LOW CONFIDENCE → REGEX ONLY
-        if confidence < CONFIDENCE_THRESHOLD:
-            logger.info(f"[EXECUTOR] Low confidence ({confidence}) → regex only")
-            return self._regex_only(text)
+        if "age" in result.get("extracted_fields", []):
+            extracted["age"] = result.get("age")
 
-        extracted: Dict[str, Any] = {}
+        if "annual_income" in result.get("extracted_fields", []):
+            extracted["income"] = result.get("annual_income")
 
-        if "age" in explicit_fields and isinstance(result.get("age"), int):
-            extracted["age"] = result["age"]
+        if "gender" in result.get("extracted_fields", []):
+            extracted["gender"] = normalize_gender(result.get("gender"))
 
-        if "annual_income" in explicit_fields and result.get("annual_income") is not None:
-            extracted["income"] = float(result["annual_income"])
+        if "category" in result.get("extracted_fields", []):
+            extracted["category"] = normalize_category(result.get("category"))
 
-        if "gender" in explicit_fields and result.get("gender"):
-            g = normalize_gender(result["gender"])
-            if g:
-                extracted["gender"] = g
+        if "occupation" in result.get("extracted_fields", []):
+            extracted["occupation"] = result.get("occupation")
 
-        if "category" in explicit_fields and result.get("category"):
-            c = normalize_category(result["category"])
-            if c:
-                extracted["category"] = c
+        return {k: v for k, v in extracted.items() if v is not None}
 
-        if "occupation" in explicit_fields and result.get("occupation"):
-            extracted["occupation"] = result["occupation"]
-
-        return extracted
-
-    # ===================== REGEX (FALLBACK) ===================== #
+    # ===================== REGEX FALLBACK ===================== #
 
     def _regex_only(self, text: str) -> Dict[str, Any]:
-        extracted: Dict[str, Any] = {}
+        extracted = {}
         for field, extractor in self.extractors.items():
             val = extractor(text)
             if val is not None:
@@ -182,29 +153,17 @@ class ExecutorNode:
         return extracted
 
     def _extract_age_regex(self, text: str) -> Optional[int]:
-        text = self._convert_hindi_numerals(text)
-        m = re.search(r"(?:उम्र|आयु)\s*(\d+)|(\d+)\s*साल", text)
-        if m:
-            age = int(m.group(1) or m.group(2))
-            if 1 <= age <= 120:
-                return age
-        return None
+        m = re.search(r"(\d+)\s*साल", text)
+        return int(m.group(1)) if m else None
 
     def _extract_income_regex(self, text: str) -> Optional[float]:
-        text = self._convert_hindi_numerals(text.lower())
         m = re.search(r"(\d+)\s*लाख", text)
-        if m:
-            return float(m.group(1)) * 100000
-        m = re.search(r"(\d+)\s*हजार", text)
-        if m:
-            return float(m.group(1)) * 1000
-        return None
+        return float(m.group(1)) * 100000 if m else None
 
     def _extract_gender_regex(self, text: str) -> Optional[str]:
-        t = text.lower()
-        if "पुरुष" in t:
+        if "पुरुष" in text:
             return "male"
-        if "महिला" in t:
+        if "महिला" in text:
             return "female"
         return None
 
@@ -212,61 +171,67 @@ class ExecutorNode:
         return normalize_category(text)
 
     def _extract_occupation_regex(self, text: str) -> Optional[str]:
-        mapping = {
-            "किसान": "farmer",
-            "नौकरी": "employee",
-            "छात्र": "student",
-            "व्यापारी": "business",
-        }
-        for k, v in mapping.items():
-            if k in text:
-                return v
+        if "किसान" in text:
+            return "farmer"
         return None
-
-    def _convert_hindi_numerals(self, text: str) -> str:
-        return text.translate(str.maketrans("०१२३४५६७८९", "0123456789"))
 
     # ===================== TOOLS ===================== #
 
     def _execute_eligibility_check(self, state: AgentState) -> AgentState:
-        try:
-            result = self.eligibility_tool.execute(
-                user_profile={
-                    "age": state.get("age"),
-                    "income": state.get("income"),
-                    "gender": state.get("gender"),
-                    "occupation": state.get("occupation"),
-                    "category": state.get("category"),
-                }
-            )
-            state["eligible_schemes"] = result.get("eligible_schemes", [])
-        except Exception as e:
-            state["error"] = f"eligibility_error: {str(e)}"
+        result = self.eligibility_tool.execute(
+            user_profile={
+                "age": state.get("age"),
+                "income": state.get("income"),
+                "gender": state.get("gender"),
+                "occupation": state.get("occupation"),
+                "category": state.get("category"),
+                "applied_schemes": state.get("applied_schemes", []),
+            }
+        )
+        state["eligible_schemes"] = result.get("eligible_schemes", [])
         return state
 
     def _execute_application(self, state: AgentState) -> AgentState:
-        try:
-            scheme_id = state.get("selected_scheme_id")
-            if not scheme_id and state.get("eligible_schemes"):
-                scheme_id = state["eligible_schemes"][0]["id"]
+        # 🔒 Resolve scheme ONLY ONCE
+        scheme_id = state.get("selected_scheme_id")
 
-            if not scheme_id:
-                state["error"] = "no_scheme_selected"
-                return state
+        if not scheme_id:
+            eligible = state.get("eligible_schemes", [])
+            if eligible:
+                scheme_id = eligible[0]["id"]
+                state["selected_scheme_id"] = scheme_id  # 🔐 LOCK
 
-            state["application_result"] = self.application_tool.execute(
-                scheme_id=scheme_id,
-                user_profile={
-                    "age": state.get("age"),
-                    "income": state.get("income"),
-                    "gender": state.get("gender"),
-                    "occupation": state.get("occupation"),
-                    "category": state.get("category"),
-                },
-            )
-            state["selected_scheme_id"] = scheme_id
-        except Exception as e:
-            state["error"] = f"application_error: {str(e)}"
+        if not scheme_id:
+            state["error"] = "no_scheme_selected"
+            return state
+
+        # 🚫 DUPLICATE BLOCK (FIXED)
+        if scheme_id in state.get("applied_schemes", []):
+            state["error"] = "already_applied"
+            return state
+
+        # ▶️ Call application tool
+        result = self.application_tool.execute(
+            scheme_id=scheme_id,
+            user_profile={
+                "age": state.get("age"),
+                "income": state.get("income"),
+                "gender": state.get("gender"),
+                "occupation": state.get("occupation"),
+                "category": state.get("category"),
+            },
+        )
+
+        # 🚫 Tool error
+        if result.get("error"):
+            state["error"] = result["error"]
+            state["error_message"] = result.get("message")
+            return state
+
+        # ✅ Success
+        state["application_result"] = result
+        state["applied_schemes"].append(scheme_id)
+
         return state
 
 

@@ -62,7 +62,7 @@ class HindiSTT:
         Returns:
             Transcribed text or None if transcription fails
         """
-        return await self._assemblyai_stt.listen(max_duration, silence_duration)
+        return await self._assemblyai_stt.listen(max_duration)
 
     def get_audio_debug_report(self) -> str:
         """
